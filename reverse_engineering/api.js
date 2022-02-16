@@ -58,6 +58,7 @@ module.exports = {
 		logInfo('Retrieving labels information', connectionInfo, logger)
 		try {
 			initDependencies(app);
+			neo4j.setTimeOut(connectionInfo);
 
 			await neo4j.connect(connectionInfo, checkConnection(logger));
 			logger.log('info', 'Successfully connected to the database instance', 'Connection');
@@ -98,6 +99,7 @@ module.exports = {
 
 	getDbCollectionsDataWrapped: async function(data, logger, cb, app) {
 		initDependencies(app);
+		neo4j.setTimeOut(data);
 		logger.log('info', data, 'Retrieving schema for chosen labels', data.hiddenKeys);
 
 		const collections = data.collectionData.collections;
@@ -159,7 +161,7 @@ module.exports = {
 				logger.progress({message: 'Start getting schema...', containerName: dbName, entityName: ''});
 				logger.log('info', dbName, 'Start getting schema');
 
-				return neo4j.getSchema(dbName, isMultiDb);
+				return neo4j.getSchema(dbName, labels, isMultiDb);
 			}).then((schema) => {
 				logger.progress({message: 'Schema has successfully got', containerName: dbName, entityName: ''});
 				logger.log('info', dbName, 'Schema has successfully got');
